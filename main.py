@@ -13,20 +13,22 @@ def nearestneighborAccuracy(data, features):
     # print(features[0])
     correctClassified = 0
     for i in range(rows):
-        print("Classifying row", i)
+        # print("Classifying row", i)
         objToClass = features[i]
         objLabels = labels[i]
         
         #https://numpy.org/doc/2.1/reference/generated/numpy.linalg.norm.html
         distances = np.linalg.norm(features - objToClass, axis = 1)
         distances[i] = np.inf
+
+        #https://stackoverflow.com/questions/2474015/getting-the-index-of-the-returned-max-or-min-item-using-max-min-on-a-list
         nearestNeighborIndex = np.argmin(distances)
-        print("   Nearest Neighbor is row", nearestNeighborIndex)
+        # print("   Nearest Neighbor is row", nearestNeighborIndex)
         if labels[i] == labels[nearestNeighborIndex]:
             correctClassified += 1
     
-    print("Correctly Classified", correctClassified)
-    print("Accuracy =", correctClassified/rows)
+    # print("Correctly Classified", correctClassified)
+    # print("Accuracy =", correctClassified/rows)
     return correctClassified/rows
 
 def forwardSelection(data, features):
@@ -108,7 +110,27 @@ def main():
     f = Figlet(font="small")
     print(colored(f.renderText("Feature Selection with Nearest Neighbor"), "blue"))
     print("Welcome to my feature selection project for CS205: AI!")
-    print("To get started, please input the data file name: ")
+    print("Note that this code only works for any small and large dataset provided by the project description.")
+    print("Extra data cleaning is necessary for other datasets")
+
+    fileName = "hello"
+    while fileName != 'q':
+        print("To get started, please input the data file name: ")
+        fileName = input()
+
+        if fileName == 'q': continue
+
+        df = pd.read_fwf(fileName, header=None)
+
+        print("Type the number for the selection algorithm you want to run:")
+        print("  1.) Forwards")
+        print("  2.) Backwards")
+        selection = int(input())
+
+        if selection == 1:
+            forwardSelection(df, df.columns[1:])
+        elif selection == 2:
+            backwardSelection(df, df.columns[1:])
 
 if __name__ == "__main__":
     main()
@@ -116,7 +138,8 @@ if __name__ == "__main__":
     #The code for reading in the txt as a dataframe was obtained from the above link
     # df = pd.read_csv("CS205_small_Data__22.txt", sep=" ", header=None)
     # df = pd.read_table("CS205_small_Data__22.txt", delimiter=" ")
-    df = pd.read_fwf("CS205_small_Data__22.txt", header=None)
-    print(df)
+    # df = pd.read_fwf("CS205_small_Data__22.txt", header=None)
 
-    nearestneighborAccuracy(df, df.columns[1:])
+    # nearestneighborAccuracy(df, df.columns[1:])
+    # forwardSelection(df, df.columns[1:])
+    # backwardSelection(df, df.columns[1:])
