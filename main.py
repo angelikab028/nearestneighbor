@@ -74,6 +74,7 @@ def backwardSelection(data, features):
     # unselectedFeatures = features
     unselectedFeatures = list(features)
     
+    accuracies.append(nearestneighborAccuracy(data, currentSelection))
     # Renive one feature at a time to current set of features
     # All features will be removed once
     for i in range(len(features)):
