@@ -65,6 +65,45 @@ def forwardSelection(data, features):
     
     return currentSelection, accuracies
 
+def backwardSelection(data, features):
+    # Start with all of the features
+    currentSelection = list(features)
+    accuracies = []
+    # unselectedFeatures = features
+    unselectedFeatures = list(features)
+    
+    # Renive one feature at a time to current set of features
+    # All features will be removed once
+    for i in range(len(features)):
+        iterAccuracies = []
+        iterFeatures = []
+
+        # Try removing one feature at a time to current sent of features
+        for feature in unselectedFeatures:
+            # print(feature)
+            featuresToTest = currentSelection.copy()
+            featuresToTest.remove(feature)
+            # print(featuresToTest)
+            accuracy = nearestneighborAccuracy(data, featuresToTest)
+            iterAccuracies.append(accuracy)
+            iterFeatures.append(feature)
+
+        # Pick the added feature that has the highest accuracy
+        maxAccIndex = np.argmax(iterAccuracies)
+        maxFeature = iterFeatures[maxAccIndex]
+        accuracies.append(iterAccuracies[maxAccIndex])
+        
+        # Add highest accuracy feature of current iteration to current set of features
+        currentSelection.remove(maxFeature)
+        # unselectedFeatures.delete(maxFeature)
+        unselectedFeatures.remove(maxFeature)
+
+        print("Highest accuracy is", iterAccuracies[maxAccIndex])
+        print("   Obtained by removing", maxFeature)
+        print("   Our current selection is now", currentSelection)
+    
+    return currentSelection, accuracies
+
 def main():
     f = Figlet(font="small")
     print(colored(f.renderText("Feature Selection with Nearest Neighbor"), "blue"))
