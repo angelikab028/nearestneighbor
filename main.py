@@ -4,12 +4,30 @@ from pyfiglet import Figlet
 import numpy as np 
 import pandas as pd
 
-def nearestneighbor(data, features):
-    features = data[features]
-    labels = data[0]
+def nearestneighborAccuracy(data, features):
+    #https://www.geeksforgeeks.org/calculate-the-euclidean-distance-using-numpy/
+    features = data[features].to_numpy()
+    labels = data[0].to_numpy()
+    rows = len(data)
 
-    print(features)
-    print(labels)
+    # print(features[0])
+    correctClassified = 0
+    for i in range(rows):
+        print("Classifying row", i)
+        objToClass = features[i]
+        objLabels = labels[i]
+        
+        #https://numpy.org/doc/2.1/reference/generated/numpy.linalg.norm.html
+        distances = np.linalg.norm(features - objToClass, axis = 1)
+        distances[i] = np.inf
+        nearestNeighborIndex = np.argmin(distances)
+        print("   Nearest Neighbor is row", nearestNeighborIndex)
+        if labels[i] == labels[nearestNeighborIndex]:
+            correctClassified += 1
+    
+    print("Correctly Classified", correctClassified)
+    print("Accuracy =", correctClassified/rows)
+    return correctClassified/rows
 
 def main():
     f = Figlet(font="small")
@@ -26,4 +44,4 @@ if __name__ == "__main__":
     df = pd.read_fwf("CS205_small_Data__22.txt", header=None)
     print(df)
 
-    nearestneighbor(df, df.columns[1:])
+    nearestneighborAccuracy(df, df.columns[1:])
