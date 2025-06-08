@@ -29,6 +29,42 @@ def nearestneighborAccuracy(data, features):
     print("Accuracy =", correctClassified/rows)
     return correctClassified/rows
 
+def forwardSelection(data, features):
+    # Start with an empty set of features
+    currentSelection = []
+    accuracies = []
+    # unselectedFeatures = features
+    unselectedFeatures = list(features)
+    
+    # Add one feature at a time to current set of features
+    # All features will be added once
+    for i in range(len(features)):
+        iterAccuracies = []
+        iterFeatures = []
+
+        # Try adding one feature at a time to current sent of features
+        for feature in unselectedFeatures:
+            featuresToTest = currentSelection + [feature]
+            accuracy = nearestneighborAccuracy(data, featuresToTest)
+            iterAccuracies.append(accuracy)
+            iterFeatures.append(feature)
+
+        # Pick the added feature that has the highest accuracy
+        maxAccIndex = np.argmax(iterAccuracies)
+        maxFeature = iterFeatures[maxAccIndex]
+        accuracies.append(iterAccuracies[maxAccIndex])
+
+        # Add highest accuracy feature of current iteration to current set of features
+        currentSelection.append(maxFeature)
+        # unselectedFeatures.delete(maxFeature)
+        unselectedFeatures.remove(maxFeature)
+
+        print("Highest accuracy is", iterAccuracies[maxAccIndex])
+        print("   Obtained by adding", maxFeature)
+        print("   Our current selection is now", currentSelection)
+    
+    return currentSelection, accuracies
+
 def main():
     f = Figlet(font="small")
     print(colored(f.renderText("Feature Selection with Nearest Neighbor"), "blue"))
